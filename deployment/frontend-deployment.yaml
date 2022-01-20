@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: frontend
+    deployed: ${TF_VAR_project}
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - env:
+            - name: POSTGRES_DB
+              value: issuedb
+            - name: POSTGRES_HOST
+              value: ${db_host}
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_PW
+              value: ${db_pass}
+            - name: POSTGRES_USER
+              value: ${db_user}
+            - name: RESTAPI_HOST
+              value: restapi
+            - name: RESTAPI_PORT
+              value: "5000"
+          image: gcr.io/${TF_VAR_project}/frontend
+          name: frontend
+          ports:
+            - containerPort: 5000
+          resources: {}
+      restartPolicy: Always
+status: {}
+
